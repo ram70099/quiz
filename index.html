@@ -1,0 +1,200 @@
+	<html>
+	<head>
+		<title>quiz</title>
+		<style>
+			body{
+				background-color:navy;
+			}
+			#main{
+				color:black;
+				width:500px;
+				height:350px;
+				background-color:white;
+				margin:auto;
+				padding:15px;
+			}
+			#main h1{
+				font-weight:25px;
+				border-bottom:dotted 1px gray;
+				padding-bottom:15px;
+			}
+			.quiz{
+				padding:7px 0;
+			}
+			.quiz h2{
+				font-size:18px;
+				font-weight:500px;
+			}
+			.btn{
+				background-color:white;
+				color:black;
+				border:1px solid gray;
+				width:100%;
+				padding:5px;
+				margin:5px 0;
+				text-align:left;
+				cursor:pointer;
+				border-radius:4px;
+				transition:all 0.2s;
+			}
+			.btn:hover:not([disabled]){
+				background-color:black;
+				color:white;
+			}
+			.btn:disabled{
+				cursor:no-drop;
+			}
+			#next-btn{
+				background:red;
+				color:white;
+				width:150px;
+				border:1px solid gray;
+				shadow:1px 1px 10px black;
+				font-weight:500px;
+				padding:10px;
+				cursor:pointer;
+				border-radius:4px;
+				margin:5px auto 0;
+				display:none;
+			}
+			#next-btn:hover{
+				background:blue;
+				color:white;
+			}
+			.correct{
+				background:green;
+			}
+			.incorrect{
+				background:red;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="main"><h1 >Simple Quiz</h1>
+			<div class="quiz">
+				<h2 id="question">Question goes here</h2>
+				<div id="answer-buttons">
+					<button class="btn">Answer 1</button>
+					<button class="btn">Answer 2</button>
+					<button class="btn">Answer 3</button>
+					<button class="btn">Answer 4</button>
+				</div>
+				<button id="next-btn">Next</button>
+			</div>
+		</div>
+		<script>
+	const question=[
+	{
+		question:"How many digit in hundred?",
+		answer:[
+			{text:"One", correct:false},
+			{text:"Two", correct:false},
+			{text:"Three", correct:true},
+			{text:"four", correct:false},
+		]
+	},
+	{
+		question:"How many digit in Thousand?",
+		answer:[
+			{text:"One", correct:false},
+			{text:"Two", correct:false},
+			{text:"Three", correct:false},
+			{text:"four", correct:true},
+		]
+	},
+	{
+		question:"How many digit in Ten?",
+		answer:[
+			{text:"One", correct:false},
+			{text:"Two", correct:true},
+			{text:"Three", correct:false},
+			{text:"four", correct:false},
+		]
+	},
+];
+const qu = document.getElementById("question");
+const  btt= document.getElementById("answer-buttons");
+const nextButton = document.getElementById("next-btn");
+
+let currentQuestionIndex= 0;
+let score=0;
+
+function startquiz(){
+		currentQuestionIndex=0;
+		score=0;
+		nextButton.innerHTML = "Next";
+		showQuestion();
+}
+function showQuestion(){
+	
+	let currentQuestion=question[currentQuestionIndex];
+	let questionNo = currentQuestionIndex + 1;
+	qu.innerHTML = questionNo + "."+ currentQuestion.
+	question;
+	resetState();
+	
+	currentQuestion.answer.forEach(answer=>{
+		const button=document.createElement("button");
+		button.innerHTML =answer.text;
+		button.classList.add("btn");
+		btt.appendChild(button);	
+		if(answer.correct){
+			button.dataset.correct =answer.correct;
+		}
+		button.addEventListener("click",selectAnswer);
+	});
+}
+function resetState(){
+	nextButton.style.display ="none";
+	while(btt.firstChild){
+		btt.removeChild(btt.firstChild);
+	}
+}
+
+ function selectAnswer(e){
+	const selectedBtn = e.target;
+	const isCorrect = selectedBtn.dataset.correct ==="true";
+	if(isCorrect){
+		selectedBtn.classList.add("correct");
+		score++;
+	}else{
+		selectedBtn.classList.add("incorrect");
+	}
+	Array.from(btt.children).forEach(button => {
+		if (button.dataset.correct ==="true"){
+			button.classList.add("correct");
+		}
+		button.disabled = true;
+	});
+	nextButton.style.display = "block";
+ }
+ 
+ function showscore(){
+	resetState();
+	qu.innerHTML =`You scored ${score} out of ${question.length}!`;
+	nextButton.innerHTML = "Play Again"
+	nextButton.style.display = "block";
+ }
+ 
+ function handleNextButton(){
+	currentQuestionIndex++;
+	if(currentQuestionIndex<question.length){
+		showQuestion();
+	}else{
+		showscore();
+	}
+ }
+
+    nextButton.addEventListener("click",()=>{
+	if(currentQuestionIndex<question.length){
+		handleNextButton();
+	}else{
+		startquiz();
+	}
+})
+
+ startquiz();
+ 
+		</script>
+	</body>
+</html>
